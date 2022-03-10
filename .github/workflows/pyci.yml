@@ -1,22 +1,27 @@
-name: Flake8-and-Pytest
+name: Python CI
 
 on: push
 
 jobs:
-  lint-and-test:
+  build:
     runs-on: ubuntu-latest
+    startegy:
+      matrix:
+        python-version: [ 3.9 ]
     steps:
       - name: checkout repo
         uses: actions/checkout@v2
-      - name: install dependencies
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }} 
+      - name: Install dependencies
         run: |
           pip install poetry
           make install
-      - name: run linter
+      - name: Run linter
         run: make lint
-      - name: run pytest
-        run: make test
-      - name: Code Coverage
+      - name: Run test and publish CC
         uses: paambaati/codeclimate-action@v3.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}

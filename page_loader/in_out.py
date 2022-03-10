@@ -5,10 +5,9 @@ import requests
 
 def check_dir(output_dir):
     if not os.path.exists(output_dir):
-        logging.warning(
+        raise FileNotFoundError(
             f'Directory "{output_dir}" doesn\'t exist. Choose another one.'
         )
-        raise FileNotFoundError
 
 
 def make_dir(dir_path):
@@ -25,9 +24,8 @@ def write_to(content, local_path):
         with open(local_path, flag) as local_file:
             local_file.write(content)
         logging.info('File was written to "{0}"'.format(local_path))
-    except Exception as _error:
-        logging.warning('Couldn\'t write to "{0}"'.format(local_path))
-        raise _error
+    except Exception:
+        raise PermissionError(f'Couldn\'t write to "{local_path}".')
 
 
 def get_web_content(url):

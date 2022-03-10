@@ -3,7 +3,6 @@ import argparse
 import os
 import sys
 import logging
-import traceback
 from page_loader import download
 
 
@@ -24,14 +23,13 @@ def main():
     )
     args = parser.parse_args()
     try:
+        print(f'Downloading page from "{args.url}"...')
         page_local_path = download(args.url, args.output, args.log)
-    except Exception:
-        logging.warning('Page wasn\'t download!')
-        logging.info(traceback.format_exc())
+    except Exception as exc:
+        logging.warning(exc)
+        print('Page wasn\'t download!')
         sys.exit(42)
-    logging.warning(
-        f'Page was successfully downloaded to "{page_local_path}".'
-    )
+    print(f'Page was successfully downloaded to "{page_local_path}".')
     sys.exit(0)
 
 

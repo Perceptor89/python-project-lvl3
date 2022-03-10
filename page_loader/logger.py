@@ -18,5 +18,5 @@ def set_logger():
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.WARNING)
     console_handler.setFormatter(logging.Formatter('%(message)s'))
-    logging.root.setLevel(logging.INFO)
     logging.root.addHandler(console_handler)
+    logging.root.setLevel(logging.INFO)

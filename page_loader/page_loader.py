@@ -1,6 +1,7 @@
 import os
 import logging
 from bs4 import BeautifulSoup
+import requests
 from progress.bar import ChargingBar
 from page_loader import url
 from page_loader.logger import set_logger, add_filehandler
@@ -45,20 +46,19 @@ def download_resources(tag_list, page_url, files_dir_path):
         attr_name = TAG_ATTRS_DICT.get(tag.name)
         tag_link = tag.get(attr_name)
         if not url.is_common_host(page_url, tag_link):
-            logging.info(f'Tag with "{tag_link}" link was ignored')
+            logging.info(f'Tag with "{tag_link}" link was ignored.')
             continue
         res_paths = build_paths(page_url, tag_link, files_dir_path)
         try:
             resource_content = get_web_content(res_paths['url'])
-        except Exception as _error:
+        except Exception:
             logging.warning(
                 'Couldn\'t download from "{0}".'.format(res_paths['url'])
             )
-            logging.info(_error)
             continue
         write_to(resource_content, res_paths['local_path'])
         tag[attr_name] = res_paths['html_link']
-        logging.info('Link "{0}" replaced to "{1}"'.format(
+        logging.info('Link "{0}" replaced to "{1}".'.format(
             tag_link, res_paths['html_link']
         ))
     bar.finish()
@@ -68,14 +68,14 @@ def download(page_url, output_dir, is_log=False):
     set_logger()
     check_dir(output_dir)
     add_filehandler(output_dir, is_log)
-    logging.warning(f'Downloading page from "{page_url}"...')
 
     try:
         raw_html = get_web_content(page_url)
-        logging.info(f'Got content from "{page_url}".')
-    except Exception as _error:
-        logging.warning(f'Couldn\'t get access to "{page_url}".')
-        raise _error
+    except Exception:
+        raise requests.RequestException(
+            f'Couldn\'t get access to "{page_url}".'
+        )
+    logging.info(f'Got content from "{page_url}".')
 
     html_soup = get_bs(raw_html)
     linked_tags = html_soup.find_all(set_tags)
