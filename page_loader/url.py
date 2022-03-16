@@ -37,3 +37,17 @@ def is_common_host(url, link):
         return True
     else:
         return False
+
+
+def build_paths(page_url, tag_link, files_dir_path):
+    base_name = get_base_name(page_url)
+    resource_url = build_full_url(tag_link, base_name)
+    resource_name = make_name_from_url(resource_url)
+    resource_local_path = os.path.join(files_dir_path, resource_name)
+    files_dir_name = os.path.split(files_dir_path)[1]
+    resource_html_link = os.path.join(files_dir_name, resource_name)
+    return {
+        'url': resource_url,
+        'local_path': resource_local_path,
+        'html_link': resource_html_link,
+    }

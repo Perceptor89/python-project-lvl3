@@ -1,6 +1,5 @@
 import os
 import logging
-import requests
 
 
 def check_dir(output_dir):
@@ -26,9 +25,3 @@ def write_to(content, local_path):
         logging.info('File was written to "{0}"'.format(local_path))
     except Exception:
         raise PermissionError(f'Couldn\'t write to "{local_path}".')
-
-
-def get_web_content(url):
-    response = requests.get(url)
-    response.raise_for_status()
-    return response.content
